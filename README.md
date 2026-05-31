@@ -22,4 +22,6 @@ git clone git@github.com:prateek11rai/dotfiles.git ~/github/prateek11rai/dotfile
 
 ## Theme
 
-We use **Dracula** everywhere. After running the bootstrap, set up Dracula manually in your terminal emulator and other apps.
+We use **Dracula** everywhere. Visit [draculatheme.com](https://draculatheme.com/) for manual setup in apps like Firefox, VS Code, YouTube, etc.
+
+If you find something that can be automated (config file, brew install, script), add it to the bootstrap or dotfiles here for future use.
