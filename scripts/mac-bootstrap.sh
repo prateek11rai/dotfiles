@@ -9,8 +9,18 @@ if ! command -v brew &>/dev/null; then
 fi
 
 echo "==> Installing packages..."
-brew install tmux starship neofetch gh
+brew install tmux starship gh
 brew install --cask wezterm font-jetbrains-mono
+
+# Neofetch is archived and disabled in Homebrew — install from source
+if ! command -v neofetch &>/dev/null; then
+  brew install neofetch 2>/dev/null || {
+    echo "  -> Installing neofetch from GitHub..."
+    curl -sSL https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch \
+      -o /usr/local/bin/neofetch
+    chmod +x /usr/local/bin/neofetch
+  }
+fi
 
 echo "==> Linking dotfiles..."
 # Zsh
