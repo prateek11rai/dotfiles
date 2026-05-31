@@ -11,14 +11,17 @@ git clone git@github.com:prateek11rai/dotfiles.git ~/github/prateek11rai/dotfile
 
 ## What's included
 
-| Tool | Config |
-|------|--------|
-| WezTerm | `~/.config/wezterm/` |
-| Tmux | `~/.config/tmux/tmux.conf` |
-| Starship | `~/.config/starship.toml` |
-| Neofetch | `~/.config/neofetch/` |
-| Zsh | `~/.zshrc` |
-| Zsh plugin | zsh-autosuggestions |
+| Tool | Config | Bootstrapped |
+|------|--------|--------------|
+| WezTerm | `~/.config/wezterm/wezterm.lua` | `brew install --cask wezterm` |
+| Tmux | `~/.config/tmux/tmux.conf` | `brew install tmux` + tpm & plugins |
+| Starship | `~/.config/starship.toml` | `brew install starship` |
+| Neofetch | `~/.config/neofetch/` | Installed from source (archived in brew) |
+| Zsh | `~/.zshrc` | Comes with macOS |
+| zsh-autosuggestions | sourced in `.zshrc` | `brew install zsh-autosuggestions` |
+| pyenv | sourced in `.zshrc` | `brew install pyenv` |
+| JetBrains Mono | — | `brew install --cask font-jetbrains-mono` |
+| gh (GitHub CLI) | — | `brew install gh` |
 
 ## Theme
 
