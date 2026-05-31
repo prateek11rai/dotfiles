@@ -9,7 +9,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 echo "==> Installing packages..."
-brew install tmux starship gh
+brew install tmux starship gh zsh-autosuggestions
 brew install --cask wezterm font-jetbrains-mono
 
 # Neofetch is archived and disabled in Homebrew — install from source
