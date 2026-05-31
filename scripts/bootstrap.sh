@@ -12,6 +12,14 @@ ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
 ln -sf "$DOTFILES/.config/starship.toml" "$HOME/.config/starship.toml"
 ln -sf "$DOTFILES/.config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
 
+# Tmux Plugin Manager
+TPM_PATH="$HOME/.config/tmux/plugins/tpm"
+if [ ! -d "$TPM_PATH" ]; then
+  echo "Installing tpm..."
+  git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
+fi
+"$TPM_PATH/bin/install_plugins" &>/dev/null || true
+
 # Wezterm
 mkdir -p "$HOME/.config/wezterm/startup"
 ln -sf "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
