@@ -17,4 +17,9 @@ mkdir -p "$HOME/.config/wezterm/startup"
 ln -sf "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
 ln -sf "$DOTFILES/.config/wezterm/startup/init.lua" "$HOME/.config/wezterm/startup/init.lua"
 
+# Neofetch
+mkdir -p "$HOME/.config/neofetch"
+ln -sf "$DOTFILES/.config/neofetch/config.conf" "$HOME/.config/neofetch/config.conf"
+ln -sf "$DOTFILES/.config/neofetch/custom-ascii.txt" "$HOME/.config/neofetch/custom-ascii.txt"
+
 echo "Done! Restart your shell for changes to take effect."
