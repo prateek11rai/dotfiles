@@ -23,20 +23,32 @@ if ! command -v neofetch &>/dev/null; then
 fi
 
 echo "==> Linking dotfiles..."
+# Symlink helper: if the target is an existing real file (not already the
+# correct symlink), move it to <target>.backup.<timestamp> before linking.
+link_with_backup() {
+  local src=$1 dest=$2
+  if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+    local backup="${dest}.backup.$(date +%Y%m%d-%H%M%S)"
+    echo "  -> Backing up existing $dest to $backup"
+    mv "$dest" "$backup"
+  fi
+  ln -sf "$src" "$dest"
+}
+
 # Zsh
-ln -sf "$DOTFILES/.zshrc" "$HOME/.zshrc"
+link_with_backup "$DOTFILES/.zshrc" "$HOME/.zshrc"
 
 # Config files
 mkdir -p "$HOME/.config"
-ln -sf "$DOTFILES/.config/starship.toml" "$HOME/.config/starship.toml"
-ln -sf "$DOTFILES/.config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
-ln -sf "$DOTFILES/.config/neofetch/config.conf" "$HOME/.config/neofetch/config.conf"
-ln -sf "$DOTFILES/.config/neofetch/custom-ascii.txt" "$HOME/.config/neofetch/custom-ascii.txt"
+link_with_backup "$DOTFILES/.config/starship.toml" "$HOME/.config/starship.toml"
+link_with_backup "$DOTFILES/.config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+link_with_backup "$DOTFILES/.config/neofetch/config.conf" "$HOME/.config/neofetch/config.conf"
+link_with_backup "$DOTFILES/.config/neofetch/custom-ascii.txt" "$HOME/.config/neofetch/custom-ascii.txt"
 
 # Wezterm
 mkdir -p "$HOME/.config/wezterm/startup"
-ln -sf "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
-ln -sf "$DOTFILES/.config/wezterm/startup/init.lua" "$HOME/.config/wezterm/startup/init.lua"
+link_with_backup "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+link_with_backup "$DOTFILES/.config/wezterm/startup/init.lua" "$HOME/.config/wezterm/startup/init.lua"
 
 echo "==> Setting up tmux..."
 TPM_PATH="$HOME/.config/tmux/plugins/tpm"
