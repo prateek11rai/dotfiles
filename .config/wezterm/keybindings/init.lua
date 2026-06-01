@@ -9,7 +9,7 @@ module.keys = {
   -- disconnected and the window ends up larger than the internal screen.
   {
     key = "f",
-    mods = "CMD|SHIFT",
+    mods = "CTRL|SHIFT",
     action = wezterm.action_callback(function(window, _)
       local screen = wezterm.gui.screens().active
       window:set_position(screen.x, screen.y)
