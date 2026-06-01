@@ -9,6 +9,10 @@ git clone git@github.com:prateek11rai/dotfiles.git ~/github/prateek11rai/dotfile
 ~/github/prateek11rai/dotfiles/scripts/mac-bootstrap.sh
 ```
 
+Before symlinking, the script moves any existing real file at the target
+to `<target>.backup.<YYYYMMDD-HHMMSS>` so prior configs aren't lost.
+Existing symlinks are replaced silently.
+
 ## What's included
 
 | Tool | Config | Bootstrapped |
