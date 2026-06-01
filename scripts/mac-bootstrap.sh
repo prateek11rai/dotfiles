@@ -46,9 +46,10 @@ link_with_backup "$DOTFILES/.config/neofetch/config.conf" "$HOME/.config/neofetc
 link_with_backup "$DOTFILES/.config/neofetch/custom-ascii.txt" "$HOME/.config/neofetch/custom-ascii.txt"
 
 # Wezterm
-mkdir -p "$HOME/.config/wezterm/startup"
+mkdir -p "$HOME/.config/wezterm/startup" "$HOME/.config/wezterm/keybindings"
 link_with_backup "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
 link_with_backup "$DOTFILES/.config/wezterm/startup/init.lua" "$HOME/.config/wezterm/startup/init.lua"
+link_with_backup "$DOTFILES/.config/wezterm/keybindings/init.lua" "$HOME/.config/wezterm/keybindings/init.lua"
 
 echo "==> Setting up tmux..."
 TPM_PATH="$HOME/.config/tmux/plugins/tpm"
