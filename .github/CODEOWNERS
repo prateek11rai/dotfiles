@@ -1,0 +1,6 @@
+# Code owners for this repository.
+# The owner is requested for review on pull requests that touch matching paths.
+# Enforced by the branch ruleset on `main` (require review from Code Owners).
+
+# Default owner for everything in the repo.
+* @prateek11rai
