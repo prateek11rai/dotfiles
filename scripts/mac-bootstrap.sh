@@ -9,7 +9,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 echo "==> Installing packages..."
-brew install tmux starship gh zsh-autosuggestions pyenv
+brew install tmux starship gh zsh-autosuggestions pyenv jq
 brew install --cask wezterm font-jetbrains-mono
 
 # Neofetch is archived and disabled in Homebrew — install from source
@@ -35,21 +35,41 @@ link_with_backup() {
   ln -sf "$src" "$dest"
 }
 
-# Zsh
-link_with_backup "$DOTFILES/.zshrc" "$HOME/.zshrc"
+# Everything under home/ mirrors $HOME — symlink each file in, recreating parent
+# dirs. Add a new config by dropping it into home/; no edit here is needed.
+# .claude is handled separately below (CLI guard + settings.json merge), so skip it.
+DOTHOME="$DOTFILES/home"
+while IFS= read -r -d '' src; do
+  dest="$HOME/${src#"$DOTHOME"/}"
+  mkdir -p "$(dirname "$dest")"
+  link_with_backup "$src" "$dest"
+done < <(find "$DOTHOME" -type f -not -path "$DOTHOME/.claude/*" -print0)
 
-# Config files
-mkdir -p "$HOME/.config"
-link_with_backup "$DOTFILES/.config/starship.toml" "$HOME/.config/starship.toml"
-link_with_backup "$DOTFILES/.config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
-link_with_backup "$DOTFILES/.config/neofetch/config.conf" "$HOME/.config/neofetch/config.conf"
-link_with_backup "$DOTFILES/.config/neofetch/custom-ascii.txt" "$HOME/.config/neofetch/custom-ascii.txt"
+# Claude Code statusline — only when the claude CLI is present.
+# The script is symlinked; the statusLine *setting* is merged into settings.json
+# (not symlinked) because Claude Code owns and rewrites that file at runtime.
+if command -v claude >/dev/null 2>&1; then
+  mkdir -p "$HOME/.claude"
+  link_with_backup "$DOTHOME/.claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 
-# Wezterm
-mkdir -p "$HOME/.config/wezterm/startup" "$HOME/.config/wezterm/keybindings"
-link_with_backup "$DOTFILES/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
-link_with_backup "$DOTFILES/.config/wezterm/startup/init.lua" "$HOME/.config/wezterm/startup/init.lua"
-link_with_backup "$DOTFILES/.config/wezterm/keybindings/init.lua" "$HOME/.config/wezterm/keybindings/init.lua"
+  settings="$HOME/.claude/settings.json"
+  [ -f "$settings" ] || echo '{}' > "$settings"
+  if ! command -v jq &>/dev/null; then
+    echo "  -> jq missing; add the statusLine block to $settings manually"
+  elif ! jq -e . "$settings" >/dev/null 2>&1; then
+    echo "  -> $settings is not valid JSON; leaving it untouched"
+  elif [ "$(jq 'has("statusLine")' "$settings")" = "true" ]; then
+    echo "  -> statusLine already configured; leaving it as-is"
+  else
+    cp "$settings" "$settings.backup.$(date +%Y%m%d-%H%M%S)"
+    tmp=$(mktemp)
+    jq --arg cmd "bash $HOME/.claude/statusline-command.sh" \
+       '.statusLine = {type: "command", command: $cmd}' "$settings" > "$tmp" && mv "$tmp" "$settings"
+    echo "  -> added statusLine to settings.json"
+  fi
+else
+  echo "  -> Skipping Claude statusline (claude CLI not found)"
+fi
 
 echo "==> Setting up tmux..."
 TPM_PATH="$HOME/.config/tmux/plugins/tpm"
@@ -57,5 +77,17 @@ if [ ! -d "$TPM_PATH" ]; then
   git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
 fi
 "$TPM_PATH/bin/install_plugins" &>/dev/null || true
+
+echo "==> Setting wallpaper..."
+WALLPAPER="$DOTFILES/assets/wallpapers/macos.png"
+if [ -f "$WALLPAPER" ]; then
+  # Best-effort: the first run triggers an Automation permission prompt (terminal
+  # → System Events). Never fail the bootstrap over a cosmetic step.
+  if osascript -e "tell application \"System Events\" to set picture of every desktop to \"$WALLPAPER\"" 2>/dev/null; then
+    echo "  -> set to assets/wallpapers/macos.png"
+  else
+    echo "  -> skipped — grant Automation permission and re-run, or set it in System Settings → Wallpaper"
+  fi
+fi
 
 echo "Done! Restart your shell."
