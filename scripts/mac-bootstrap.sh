@@ -9,8 +9,12 @@ if ! command -v brew &>/dev/null; then
 fi
 
 echo "==> Installing packages..."
-brew install tmux starship gh zsh-autosuggestions pyenv jq
-brew install --cask wezterm font-jetbrains-mono
+# Install only what's missing — safe to re-run. (`brew install --cask` on an
+# already-installed cask exits non-zero, which would abort the script under `set -e`.)
+brew_ensure()      { for p in "$@"; do brew list --versions "$p"  >/dev/null 2>&1 || brew install "$p";        done; }
+brew_ensure_cask() { for p in "$@"; do brew list --cask "$p"      >/dev/null 2>&1 || brew install --cask "$p"; done; }
+brew_ensure tmux starship gh zsh-autosuggestions pyenv jq
+brew_ensure_cask wezterm font-jetbrains-mono
 
 # Neofetch is archived and disabled in Homebrew — install from source
 if ! command -v neofetch &>/dev/null; then
