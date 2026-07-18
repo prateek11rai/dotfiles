@@ -13,7 +13,7 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-22.jdk/Contents/Home
 # uv
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
-# Netskope corporate SSL cert (only on corp machines where the cert exists)
+# Netskope SSL cert — applied only on machines where the cert is present
 NS_CERT="/Library/Application Support/ns_cert/nscacert_combined.pem"
 if [ -f "$NS_CERT" ]; then
   export AWS_CA_BUNDLE="$NS_CERT"
