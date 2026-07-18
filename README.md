@@ -75,3 +75,7 @@ Why the setting is *merged* rather than symlinked like everything else: Claude C
 We use **Dracula** everywhere. Visit [draculatheme.com](https://draculatheme.com/) for manual setup in apps like Firefox, VS Code, YouTube, etc.
 
 If you find something that can be automated (config file, brew install, script), add it to the bootstrap or dotfiles here for future use.
+
+## License
+
+[MIT](LICENSE) © Prateek Rai. Bundled third-party assets keep their own license — see [`assets/wallpapers/`](assets/wallpapers/README.md).
