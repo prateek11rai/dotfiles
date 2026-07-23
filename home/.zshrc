@@ -28,3 +28,11 @@ unset NS_CERT
 # Aliases
 alias vc='vcluster platform connect vcluster'
 alias ap='argopm install . -n default -f -c .'
+
+# Google Cloud SDK (Homebrew cask gcloud-cli) — gcloud + gsutil on PATH + completion
+if [ -f "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc" ]; then
+  source "/opt/homebrew/share/google-cloud-sdk/path.zsh.inc"
+fi
+if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then
+  source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
+fi
