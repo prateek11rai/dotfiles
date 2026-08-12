@@ -36,3 +36,6 @@ fi
 if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then
   source "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc"
 fi
+
+# Local user binaries (uv-installed tools, standalone CLIs)
+[[ -d "$HOME/.local/bin" && ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:$PATH"
