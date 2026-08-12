@@ -56,20 +56,53 @@ if command -v claude >/dev/null 2>&1; then
   mkdir -p "$HOME/.claude"
   link_with_backup "$DOTHOME/.claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
 
+  # Custom themes are plain files Claude Code only ever reads, so they are symlinked
+  # like any other dotfile. (The *selection* lives in settings.json — merged below.)
+  if [ -d "$DOTHOME/.claude/themes" ]; then
+    mkdir -p "$HOME/.claude/themes"
+    for theme in "$DOTHOME"/.claude/themes/*.json; do
+      [ -f "$theme" ] || continue   # unmatched glob when the dir holds no .json files
+      link_with_backup "$theme" "$HOME/.claude/themes/$(basename "$theme")"
+    done
+  fi
+
   settings="$HOME/.claude/settings.json"
   [ -f "$settings" ] || echo '{}' > "$settings"
+
+  # Merge one top-level key, no-op when it already holds the wanted value (so a second
+  # run changes nothing and leaves no extra backup). $2 is raw JSON, not a bare string.
+  claude_backed_up=""
+  claude_set() {
+    local key=$1 val=$2 tmp
+    if [ "$(jq --arg k "$key" --argjson v "$val" '.[$k] == $v' "$settings")" = "true" ]; then
+      return 0
+    fi
+    if [ -z "$claude_backed_up" ]; then
+      cp "$settings" "$settings.backup.$(date +%Y%m%d-%H%M%S)"
+      claude_backed_up=1
+    fi
+    tmp=$(mktemp)
+    jq --arg k "$key" --argjson v "$val" '.[$k] = $v' "$settings" > "$tmp" && mv "$tmp" "$settings"
+    echo "  -> set $key in settings.json"
+  }
+
   if ! command -v jq &>/dev/null; then
-    echo "  -> jq missing; add the statusLine block to $settings manually"
+    echo "  -> jq missing; configure $settings manually"
   elif ! jq -e . "$settings" >/dev/null 2>&1; then
     echo "  -> $settings is not valid JSON; leaving it untouched"
-  elif [ "$(jq 'has("statusLine")' "$settings")" = "true" ]; then
-    echo "  -> statusLine already configured; leaving it as-is"
   else
-    cp "$settings" "$settings.backup.$(date +%Y%m%d-%H%M%S)"
-    tmp=$(mktemp)
-    jq --arg cmd "bash $HOME/.claude/statusline-command.sh" \
-       '.statusLine = {type: "command", command: $cmd}' "$settings" > "$tmp" && mv "$tmp" "$settings"
-    echo "  -> added statusLine to settings.json"
+    # statusLine: set once, then left alone (the command embeds $HOME).
+    if [ "$(jq 'has("statusLine")' "$settings")" = "true" ]; then
+      echo "  -> statusLine already configured; leaving it as-is"
+    else
+      claude_set statusLine \
+        "$(jq -n --arg cmd "bash $HOME/.claude/statusline-command.sh" '{type: "command", command: $cmd}')"
+    fi
+
+    # Repo conventions, re-asserted on every run: Dracula everywhere, and a terminal bell
+    # because Claude Code only sends desktop notifications on Ghostty/Kitty/iTerm2.
+    claude_set theme '"custom:dracula"'
+    claude_set preferredNotifChannel '"terminal_bell"'
   fi
 else
   echo "  -> Skipping Claude statusline (claude CLI not found)"
