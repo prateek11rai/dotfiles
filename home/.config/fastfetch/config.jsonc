@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fastfetch-cli/fastfetch/dev/doc/json_schema.json",
+
+  // Jolly Roger, coloured per-region. Placeholders are $1-$3 (fastfetch), not
+  // ${c1}-${c3} (neofetch). Colours are the terminal palette — 1 red, 3 yellow,
+  // 7 white — so the art follows whatever Dracula variant the terminal loads.
+  // Leading `1;` keeps neofetch's ascii_bold="on".
+  "logo": {
+    "type": "file",
+    "source": "~/.config/fastfetch/custom-ascii.txt",
+    "color": {
+      "1": "1;38;5;1",
+      "2": "1;38;5;3",
+      "3": "1;38;5;7"
+    },
+    "padding": { "right": 3 }
+  },
+
+  "modules": [
+    "title",
+    "separator",
+    { "type": "os", "key": "OS" },
+    { "type": "host", "key": "Host" },
+    { "type": "kernel", "key": "Kernel" },
+    { "type": "uptime", "key": "Uptime" },
+    { "type": "packages", "key": "Packages" },
+    { "type": "shell", "key": "Shell" },
+    { "type": "display", "key": "Resolution" },
+    { "type": "wm", "key": "WM" },
+    { "type": "wmtheme", "key": "WM Theme" },
+    { "type": "theme", "key": "Theme" },
+    { "type": "terminal", "key": "Terminal" },
+    { "type": "terminalfont", "key": "Terminal Font" },
+    { "type": "cpu", "key": "CPU" },
+    { "type": "gpu", "key": "GPU" },
+    { "type": "memory", "key": "Memory" },
+    "break",
+    "colors"
+  ]
+}

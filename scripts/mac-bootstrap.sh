@@ -13,18 +13,8 @@ echo "==> Installing packages..."
 # already-installed cask exits non-zero, which would abort the script under `set -e`.)
 brew_ensure()      { for p in "$@"; do brew list --versions "$p"  >/dev/null 2>&1 || brew install "$p";        done; }
 brew_ensure_cask() { for p in "$@"; do brew list --cask "$p"      >/dev/null 2>&1 || brew install --cask "$p"; done; }
-brew_ensure tmux starship gh zsh-autosuggestions pyenv jq
+brew_ensure tmux starship gh zsh-autosuggestions pyenv jq fastfetch
 brew_ensure_cask wezterm font-jetbrains-mono
-
-# Neofetch is archived and disabled in Homebrew — install from source
-if ! command -v neofetch &>/dev/null; then
-  brew install neofetch 2>/dev/null || {
-    echo "  -> Installing neofetch from GitHub..."
-    curl -sSL https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch \
-      -o /usr/local/bin/neofetch
-    chmod +x /usr/local/bin/neofetch
-  }
-fi
 
 echo "==> Linking dotfiles..."
 # Symlink helper: if the target is an existing real file (not already the

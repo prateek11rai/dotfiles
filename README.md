@@ -48,7 +48,7 @@ rather than symlinked (Claude Code owns that file).
 | WezTerm | `~/.config/wezterm/wezterm.lua` | `brew install --cask wezterm` |
 | Tmux | `~/.config/tmux/tmux.conf` | `brew install tmux` + tpm & plugins |
 | Starship | `~/.config/starship.toml` | `brew install starship` |
-| Neofetch | `~/.config/neofetch/` | Installed from source (archived in brew) |
+| Fastfetch | `~/.config/fastfetch/` | `brew install fastfetch` |
 | Zsh | `~/.zshrc` | Comes with macOS |
 | zsh-autosuggestions | sourced in `.zshrc` | `brew install zsh-autosuggestions` |
 | pyenv | sourced in `.zshrc` | `brew install pyenv` |
