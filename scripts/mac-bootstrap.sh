@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# Re-exec under real bash when another shell started us: `sh scripts/mac-bootstrap.sh`
+# runs macOS /bin/sh — bash in POSIX mode — which rejects the process substitution
+# below at parse time. Keep this block POSIX-clean; the invoking shell parses it.
+if [ -z "${BASH_VERSION:-}" ] || [ "${BASH##*/}" != bash ]; then
+  exec /bin/bash "$0" "$@"
+fi
 set -euo pipefail
 
 DOTFILES="$HOME/github/prateek11rai/dotfiles"
