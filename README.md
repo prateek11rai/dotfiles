@@ -38,8 +38,10 @@ assets/    referenced, never symlinked (wallpapers, …)
 The bootstrap walks `home/` and links each file to the matching path under
 `$HOME`, so adding a config is just dropping it into `home/` — no bootstrap edit
 needed. `.claude/` is special-cased: the statusline links only when the `claude`
-CLI is present, and its `statusLine` setting is merged into `settings.json`
-rather than symlinked (Claude Code owns that file).
+CLI is present, its `statusLine` setting is merged into `settings.json`
+rather than symlinked (Claude Code owns that file), and each folder under
+`.claude/skills/` is linked as a directory so a skill's bundled scripts travel
+with it.
 
 ## What's included
 
@@ -55,6 +57,7 @@ rather than symlinked (Claude Code owns that file).
 | JetBrains Mono | — | `brew install --cask font-jetbrains-mono` |
 | gh (GitHub CLI) | — | `brew install gh` |
 | Claude statusline | `~/.claude/statusline-command.sh` | symlink + `statusLine` merged into `settings.json` (only when `claude` is installed; needs `jq`) |
+| Claude skills | `~/.claude/skills/<name>/` | directory symlinks per skill (only when `claude` is installed) |
 
 ## Claude Code statusline
 
@@ -69,6 +72,17 @@ Why the setting is *merged* rather than symlinked like everything else: Claude C
   "statusLine": { "type": "command", "command": "bash ~/.claude/statusline-command.sh" }
 }
 ```
+
+## Claude Code skills
+
+Personal skills live in `home/.claude/skills/<name>/` as self-contained folders
+(`SKILL.md` plus any `scripts/`) and are linked into `~/.claude/skills/` as
+directories, so `/<name>` is available in every Claude Code session on every
+machine that ran the bootstrap.
+
+| Skill | What it does |
+|-------|--------------|
+| `star-org-contribs` | Stars every repo in a GitHub org you have commits in (default branch, any live branch tip, or a PR you authored) and files them under a star list. Needs `gh` with the `repo` scope, plus `user` for lists. |
 
 ## Theme
 

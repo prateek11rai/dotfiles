@@ -32,6 +32,11 @@ There is no unit suite. The test is `scripts/mac-bootstrap.sh` run end-to-end:
   auto-discovers and symlinks it, no bootstrap edit needed. `.claude/` is
   special-cased (statusline links only when the `claude` CLI exists; its setting is
   merged into `settings.json`, not symlinked). Details in the README.
+- **Adding a Claude Code skill:** drop a folder under `home/.claude/skills/<name>/`
+  with a `SKILL.md` and any bundled `scripts/`. The bootstrap links the whole
+  directory into `~/.claude/skills/`, so the skill can reference its scripts by
+  `~/.claude/skills/<name>/scripts/...`. Skill docs are timeless instructions with
+  the why inline — no dates or run narratives.
 
 ## Workflow this setup is built around
 
