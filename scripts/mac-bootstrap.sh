@@ -38,7 +38,7 @@ link_with_backup() {
 
 # Everything under home/ mirrors $HOME — symlink each file in, recreating parent
 # dirs. Add a new config by dropping it into home/; no edit here is needed.
-# .claude is handled separately below (CLI guard, skill dirs, settings.json merge), so skip it.
+# .claude is handled separately below (CLI guard, settings.json merge), so skip it.
 DOTHOME="$DOTFILES/home"
 while IFS= read -r -d '' src; do
   dest="$HOME/${src#"$DOTHOME"/}"
@@ -46,7 +46,7 @@ while IFS= read -r -d '' src; do
   link_with_backup "$src" "$dest"
 done < <(find "$DOTHOME" -type f -not -path "$DOTHOME/.claude/*" -print0)
 
-# Claude Code statusline, personal skills, settings — only when the claude CLI is present.
+# Claude Code statusline, themes, settings — only when the claude CLI is present.
 # The script is symlinked; the statusLine *setting* is merged into settings.json
 # (not symlinked) because Claude Code owns and rewrites that file at runtime.
 if command -v claude >/dev/null 2>&1; then
@@ -60,24 +60,6 @@ if command -v claude >/dev/null 2>&1; then
     for theme in "$DOTHOME"/.claude/themes/*.json; do
       [ -f "$theme" ] || continue   # unmatched glob when the dir holds no .json files
       link_with_backup "$theme" "$HOME/.claude/themes/$(basename "$theme")"
-    done
-  fi
-
-  # Personal skills are self-contained folders (SKILL.md + bundled scripts), so each
-  # is linked as a directory, not file-by-file: SKILL.md refers to its scripts by the
-  # ~/.claude/skills/<name>/ path. `ln -h` replaces an existing dir symlink instead
-  # of descending into it, which keeps a second run a no-op.
-  if [ -d "$DOTHOME/.claude/skills" ]; then
-    mkdir -p "$HOME/.claude/skills"
-    for skill in "$DOTHOME"/.claude/skills/*/; do
-      [ -f "$skill/SKILL.md" ] || continue
-      skill=${skill%/}; dest="$HOME/.claude/skills/$(basename "$skill")"
-      if [ -e "$dest" ] && [ ! -L "$dest" ]; then
-        backup="${dest}.backup.$(date +%Y%m%d-%H%M%S)"
-        echo "  -> Backing up existing $dest to $backup"
-        mv "$dest" "$backup"
-      fi
-      ln -sfh "$skill" "$dest"
     done
   fi
 
